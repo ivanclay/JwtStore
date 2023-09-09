@@ -9,6 +9,7 @@ namespace JwtStore.Core.AccountContext.ValueObjects
         public DateTime? VerifiedAt { get; private set; } = null;
         public bool IsActive => VerifiedAt != null && ExpiresAt == null;
 
+        public Verification() { }
         public void Verify(string code) 
         {
             if(IsActive) { throw new Exception("Já ativo"); }

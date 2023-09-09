@@ -8,9 +8,19 @@ namespace JwtStore.Core.AccountContext.ValueObjects
     {
         private const string Valid = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
         private const string Special = "!@#$%ˆ&*(){}[];";
+        private string password;
 
         public string Hash { get; } = string.Empty;
         public string ResetCode { get; set; } = Guid.NewGuid().ToString("N")[..8].ToUpper();
+        
+        protected Password() { }
+        public Password(string? text = null)
+        {
+            if (string.IsNullOrEmpty(text) || string.IsNullOrWhiteSpace(text))
+                text = Generate();
+
+            Hash = Hashing(text);
+        }
 
         private static string Generate(short lenght = 16, bool includeSpecialChars = true, bool upperCase = false)
         {

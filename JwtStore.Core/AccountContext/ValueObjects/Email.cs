@@ -8,6 +8,7 @@ namespace JwtStore.Core.AccountContext.ValueObjects
     {
         private const string Pattern = @"^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$";
 
+        protected Email() { }
         public Email(string address) 
         {
             if (string.IsNullOrEmpty(address)) throw new Exception("E-mail inválido");
