@@ -1,7 +1,8 @@
 ﻿using JwtStore.Core.AccountContext.ValueObjects;
-using JwtStore.Core.SharedContext.Entities;
+using JwtStore.Core.Contexts.AccountContext.ValueObjects;
+using JwtStore.Core.Contexts.SharedContext.Entities;
 
-namespace JwtStore.Core.AccountContext.Entities
+namespace JwtStore.Core.Contexts.AccountContext.Entities
 {
     public class User : Entity
     {
@@ -19,15 +20,15 @@ namespace JwtStore.Core.AccountContext.Entities
 
         public void UpdatePassword(string plainTExtPassword, string code)
         {
-            if(!string.Equals(code.Trim(), Password.ResetCode.Trim(), StringComparison.CurrentCultureIgnoreCase)) 
+            if (!string.Equals(code.Trim(), Password.ResetCode.Trim(), StringComparison.CurrentCultureIgnoreCase))
                 throw new Exception("Código de restauração inválido");
 
             var password = new Password(plainTExtPassword);
             Password = password;
         }
 
-        public void UpdateEmail(Email email) 
-        { 
+        public void UpdateEmail(Email email)
+        {
             Email = email;
         }
     }

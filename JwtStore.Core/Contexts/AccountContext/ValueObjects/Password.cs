@@ -1,8 +1,8 @@
-﻿using JwtStore.Core.SharedContext.ValueObjects;
+﻿using JwtStore.Core.Contexts.SharedContext.ValueObjects;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Cryptography;
 
-namespace JwtStore.Core.AccountContext.ValueObjects
+namespace JwtStore.Core.Contexts.AccountContext.ValueObjects
 {
     public class Password : ValueObject
     {
@@ -12,7 +12,7 @@ namespace JwtStore.Core.AccountContext.ValueObjects
 
         public string Hash { get; } = string.Empty;
         public string ResetCode { get; set; } = Guid.NewGuid().ToString("N")[..8].ToUpper();
-        
+
         protected Password() { }
         public Password(string? text = null)
         {
@@ -24,7 +24,7 @@ namespace JwtStore.Core.AccountContext.ValueObjects
 
         private static string Generate(short lenght = 16, bool includeSpecialChars = true, bool upperCase = false)
         {
-            var chars = includeSpecialChars ? (Valid + Special) : Valid;
+            var chars = includeSpecialChars ? Valid + Special : Valid;
             var startRandom = upperCase ? 26 : 0;
             var index = 0;
             var res = new char[lenght];
@@ -34,13 +34,13 @@ namespace JwtStore.Core.AccountContext.ValueObjects
             {
                 res[index++] = chars[rnd.Next(startRandom, chars.Length)];
             }
-            
+
             return new string(res);
         }
-    
-        private static string Hashing(string password, short saltsize = 16, short keySize = 32, int iterations = 10000, char splitChar = '.') 
+
+        private static string Hashing(string password, short saltsize = 16, short keySize = 32, int iterations = 10000, char splitChar = '.')
         {
-            if (string.IsNullOrEmpty(password)) 
+            if (string.IsNullOrEmpty(password))
                 throw new Exception("Password should not be null or empty");
 
             password += Configuration.Secrets.PasswordSaltKey;
@@ -52,21 +52,21 @@ namespace JwtStore.Core.AccountContext.ValueObjects
 
             return $"{iterations}{splitChar}{salt}{splitChar}{key}";
         }
-    
+
         private static bool Verify(string hash, string password, short keySize = 32, int iterations = 10000, char splitChar = '.')
         {
             password += Configuration.Secrets.PasswordSaltKey;
 
             var parts = hash.Split(splitChar, 3);
-            
-            if (parts.Length < 3 )
+
+            if (parts.Length < 3)
                 return false;
 
             var hashIteractions = Convert.ToInt32(parts[0]);
             var salt = Convert.FromBase64String(parts[1]);
             var key = Convert.FromBase64String(parts[2]);
 
-            if (hashIteractions != iterations )
+            if (hashIteractions != iterations)
                 return false;
 
             using var algorithm = new Rfc2898DeriveBytes(password, salt, iterations, HashAlgorithmName.SHA256);
