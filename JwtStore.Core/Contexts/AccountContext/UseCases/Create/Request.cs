@@ -1,5 +1,3 @@
 ﻿namespace JwtStore.Core.Contexts.AccountContext.UseCases.Create;
 
-public class Request
-{
-}
+public record Request(string Name, string Email, string Password);
