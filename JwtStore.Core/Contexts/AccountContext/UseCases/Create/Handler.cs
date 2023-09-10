@@ -49,8 +49,41 @@ public class Handler
         }
         #endregion
 
-        //03 - Verificar se usuario existe na base
-        //04 - persistir dados
-        //05 - Enviar email de ativação
+        #region 03 - Verificar se usuario existe na base
+        try
+        {
+            var exists = await _repository.AnyAsync(request.Email, cancellationToken);
+            if (exists)
+                return new Response("Este email já está em uso", 400);
+        }
+        catch
+        {
+            return new Response("Falha ao verificar email cadastrado", 500);
+        }
+        #endregion
+
+        #region 04 - persistir dados
+        try
+        {
+            await _repository.SaveAsync(user, cancellationToken);
+        }
+        catch
+        {
+            return new Response("Falha ao tentar cadastrar email", 500);
+        }
+        #endregion
+
+        #region 05 - Enviar email de ativação
+        try
+        {
+            await _service.SendVerificationEmailAsync(user, cancellationToken);
+        }
+        catch
+        {
+            //Do nothing;
+        }
+        #endregion
+
+        return new Response("Conta criada", new ResponseData(user.Id, user.Name, user.Email));
     }
 }
