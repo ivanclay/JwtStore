@@ -10,7 +10,7 @@ public class UserMap : IEntityTypeConfiguration<User>
     {
         builder.ToTable("User");
         builder.HasKey(x => x.Id);
-        builder.Property(x => x.Nome)
+        builder.Property(x => x.Name)
             .HasColumnName("Name")
             .HasColumnType("NVARCHAR")
             .HasMaxLength(120)

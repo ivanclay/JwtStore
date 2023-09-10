@@ -57,7 +57,7 @@ public class Handler : IRequestHandler<Request, Response>
             if (exists)
                 return new Response("Este email já está em uso", 400);
         }
-        catch
+        catch(Exception ex)
         {
             return new Response("Falha ao verificar email cadastrado", 500);
         }
