@@ -10,9 +10,6 @@ namespace JwtStore.Core.Contexts.AccountContext.ValueObjects
         private const string Special = "!@#$%ˆ&*(){}[];";
         private string password;
 
-        public string Hash { get; } = string.Empty;
-        public string ResetCode { get; set; } = Guid.NewGuid().ToString("N")[..8].ToUpper();
-
         protected Password() { }
         public Password(string? text = null)
         {
@@ -21,6 +18,12 @@ namespace JwtStore.Core.Contexts.AccountContext.ValueObjects
 
             Hash = Hashing(text);
         }
+
+        public bool Challenge(string plainTextPassword)
+        => Verify(Hash, plainTextPassword);
+
+        public string Hash { get; } = string.Empty;
+        public string ResetCode { get; set; } = Guid.NewGuid().ToString("N")[..8].ToUpper();
 
         private static string Generate(short lenght = 16, bool includeSpecialChars = true, bool upperCase = false)
         {
@@ -75,5 +78,7 @@ namespace JwtStore.Core.Contexts.AccountContext.ValueObjects
             return keyToCheck.SequenceEqual(key);
 
         }
+
+
     }
 }
